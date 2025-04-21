@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select a Split</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body class="minecraft-border">
+  <h1 class="main-title">Select an Existing Split</h1>
+  <ul id="splitList" class="split-list"></ul>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadSplits() {
+      const querySnapshot = await getDocs(collection(db, "splits"));
+      const splitList = document.getElementById("splitList");
+      splitList.innerHTML = "";
+      querySnapshot.forEach(doc => {
+        const li = document.createElement("li");
+        li.className = "split-entry";
+        li.textContent = doc.id;
+        li.onclick = () => {
+          localStorage.setItem('currentSplit', doc.id);
+          location.href = "expense.html";
+        };
+        splitList.appendChild(li);
+      });
+    }
+
+    loadSplits();
+  </script>
+</body>
+</html>
